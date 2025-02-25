@@ -8,6 +8,6 @@ import { SimpleForm } from './Hooks.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>    
-    <Counter/>    
+    <SimpleForm/>    
   </StrictMode>,
 )
