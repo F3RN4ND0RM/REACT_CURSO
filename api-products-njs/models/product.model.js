@@ -19,7 +19,11 @@ const Product = Sequelize.define(
     descripcion : {
         type : DataTypes.STRING,
         allowNull : false
-    }    
+    },
+    status : {
+      type : DataTypes.INTEGER,
+      allowNull : false
+  }     
   },
   {
     modelName : 'products',

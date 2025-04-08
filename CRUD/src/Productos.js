@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-const bootstrap = require('bootstrap')
+import './App.css';
 
 const Productos = () => {
   const [products, setProducts] = useState([]);
-  const [newProduct, setNewProduct] = useState({ name: "", description: "", price: "" });
-  const [editingProduct, setEditingProduct] = useState(null);
+  const [newProduct, setNewProduct] = useState({ nombre: "", descripcion: "", precio: "", existencia: "" });
+  const [editingProduct, setEditingProduct] =  useState({ nombre: "", descripcion: "", precio: "", existencia: "" });
+
   const inputStyle = {
     width: '100%',
     padding: '0.75em',
@@ -14,7 +15,7 @@ const Productos = () => {
     borderRadius: '6px',
     fontSize: '1em',
   };
-  
+
   const buttonStyle = (bgColor) => ({
     padding: '0.6em 1.2em',
     backgroundColor: bgColor,
@@ -24,11 +25,8 @@ const Productos = () => {
     cursor: 'pointer',
   });
 
-  
+  const apiUrl = "http://localhost:8080/products";
 
-  const apiUrl = "http://localhost:8080/products/"; // Cambia esta URL por tu API.
-
-  // Leer productos (GET)
   const fetchProducts = async () => {
     try {
       const response = await axios.get(apiUrl);
@@ -42,21 +40,25 @@ const Productos = () => {
     fetchProducts();
   }, []);
 
-  // Crear producto (POST)
   const createProduct = async () => {
+    console.log(newProduct)
+    if (!newProduct.nombre || !newProduct.precio || !newProduct.descripcion || !newProduct.existencia) {
+      alert("Todos los campos son obligatorios.");
+      return;
+    }
+
     try {
-      await axios.post(apiUrl, newProduct);
+      await axios.post(apiUrl, {product:  newProduct});
       fetchProducts();
-      setNewProduct({ name: "", description: "", price: "" });
+      setNewProduct({ nombre: "", description: "", precio: "", existencia: "" });
     } catch (error) {
       console.error("Error al crear el producto:", error);
     }
   };
 
-  // Actualizar producto (PUT)
   const updateProduct = async (id) => {
     try {
-      await axios.put(`${apiUrl}/${id}`, editingProduct);
+      await axios.put(`${apiUrl}/${id}`, {product : {editingProduct}});
       fetchProducts();
       setEditingProduct(null);
     } catch (error) {
@@ -64,7 +66,6 @@ const Productos = () => {
     }
   };
 
-  // Eliminar producto (DELETE)
   const deleteProduct = async (id) => {
     try {
       await axios.delete(`${apiUrl}/${id}`);
@@ -75,159 +76,151 @@ const Productos = () => {
   };
 
   return (
-    <div>
-      <h1>CRUD de Productos</h1>
-
-      {/* Formulario para crear un nuevo producto */}
-      <h2>Crear Producto</h2>
+    <div style={{ padding: '2em' }}>
+      <h2>Agregar nuevo producto</h2>
       <input
         type="text"
         placeholder="Nombre"
-        value={newProduct.name}
-        onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
+        value={newProduct.nombre}
+        onChange={(e) => setNewProduct({ ...newProduct, nombre: e.target.value })}
+        style={inputStyle}
       />
       <input
         type="text"
         placeholder="Descripción"
-        value={newProduct.description}
-        onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
+        value={newProduct.descripcion}
+        onChange={(e) => setNewProduct({ ...newProduct, descripcion: e.target.value })}
+        style={inputStyle}
       />
       <input
         type="number"
         placeholder="Precio"
-        value={newProduct.price}
-        onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
+        value={newProduct.precio}
+        onChange={(e) => setNewProduct({ ...newProduct, precio: e.target.value })}
+        style={inputStyle}
       />
-      <button onClick={createProduct}>Crear</button>
+      <input
+        type="number"
+        placeholder="Stock"
+        value={newProduct.existencia}
+        onChange={(e) => setNewProduct({ ...newProduct, existencia: e.target.value })}
+        style={inputStyle}
+      />
+      <button onClick={createProduct} style={buttonStyle('#2ecc71')}>
+        Crear producto
+      </button>
 
-      {/* Listado de productos */}
-      <h2>Productos</h2>7
+      <h2 style={{ marginTop: '2em' }}>Productos</h2>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2em', justifyContent: 'center' }}>
-  {products.map((product) => (
-    <div
-      key={product.id}
-      style={{
-        border: '1px solid #ddd',
-        borderRadius: '12px',
-        padding: '1.5em',
-        width: '250px',
-        boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-        backgroundColor: '#fff',
-        transition: 'transform 0.2s',
-      }}
-      onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.02)')}
-      onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
-    >
-      <p style={{ fontWeight: 'bold', fontSize: '1.2em', marginBottom: '0.5em' }}>{product.nombre}</p>
-      <p style={{ color: '#555', marginBottom: '0.5em' }}>{product.descripcion}</p>
-      <p style={{ fontWeight: 'bold', color: '#2c3e50', marginBottom: '0.5em' }}>${product.precio}</p>
-      <p style={{ color: '#888', marginBottom: '1em' }}>Existencia: {product.existencia}</p>
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <button
-          onClick={() => setEditingProduct(product)}
-          style={{
-            padding: '0.5em 1em',
-            backgroundColor: '#3498db',
-            color: 'white',
-            border: 'none',
-            borderRadius: '6px',
-            cursor: 'pointer',
-          }}
-        >
-          Editar
-        </button>
-        <button
-          onClick={() => deleteProduct(product.id)}
-          style={{
-            padding: '0.5em 1em',
-            backgroundColor: '#e74c3c',
-            color: 'white',
-            border: 'none',
-            borderRadius: '6px',
-            cursor: 'pointer',
-          }}
-        >
-          Eliminar
-        </button>
+        {products.map((product) => (
+          <div
+            key={product.id}
+            style={{
+              border: '1px solid #ddd',
+              borderRadius: '12px',
+              padding: '1.5em',
+              width: '250px',
+              boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+              backgroundColor: '#fff',
+              transition: 'transform 0.2s',
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.02)')}
+            onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+          >
+            <p style={{ fontWeight: 'bold', fontSize: '1.2em', marginBottom: '0.5em' }}>{product.nombre}</p>
+            <p style={{ color: '#555', marginBottom: '0.5em' }}>{product.descripcion}</p>
+            <p style={{ fontWeight: 'bold', color: '#2c3e50', marginBottom: '0.5em' }}>${product.precio}</p>
+            <p style={{ color: '#888', marginBottom: '1em' }}>Stock: {product.existencia}</p>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <button
+                onClick={() => setEditingProduct(product)}
+                style={buttonStyle('#3498db')}
+              >
+                Editar
+              </button>
+              <button
+                onClick={() => deleteProduct(product.id)}
+                style={buttonStyle('#e74c3c')}
+              >
+                Eliminar
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
-    </div>
-  ))}
-</div>
 
-
-      {/* Formulario para editar un producto */}
       {editingProduct && (
-  <div
-    style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      width: '100vw',
-      height: '100vh',
-      backgroundColor: 'rgba(0,0,0,0.5)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 1000,
-    }}
-  >
-    <div
-      style={{
-        backgroundColor: '#fff',
-        padding: '2em',
-        borderRadius: '12px',
-        width: '90%',
-        maxWidth: '400px',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
-        position: 'relative',
-      }}
-    >
-      <h2 style={{ marginBottom: '1em' }}>Editar Producto</h2>
-      <input
-        type="text"
-        placeholder="Nombre"
-        value={editingProduct.name}
-        onChange={(e) =>
-          setEditingProduct({ ...editingProduct, name: e.target.value })
-        }
-        style={inputStyle}
-      />
-      <input
-        type="text"
-        placeholder="Descripción"
-        value={editingProduct.description}
-        onChange={(e) =>
-          setEditingProduct({ ...editingProduct, description: e.target.value })
-        }
-        style={inputStyle}
-      />
-      <input
-        type="number"
-        placeholder="Precio"
-        value={editingProduct.price}
-        onChange={(e) =>
-          setEditingProduct({ ...editingProduct, price: e.target.value })
-        }
-        style={inputStyle}
-      />
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1em' }}>
-        <button
-          onClick={() => updateProduct(editingProduct.id)}
-          style={buttonStyle('#27ae60')}
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+          }}
         >
-          Actualizar
-        </button>
-        <button
-          onClick={() => setEditingProduct(null)}
-          style={buttonStyle('#e74c3c')}
-        >
-          Cancelar
-        </button>
-      </div>
-    </div>
-  </div>
-)}
-
+          <div
+            style={{
+              backgroundColor: '#fff',
+              padding: '2em',
+              borderRadius: '12px',
+              width: '90%',
+              maxWidth: '400px',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+              position: 'relative',
+            }}
+          >
+            <h2 style={{ marginBottom: '1em' }}>Editar Producto</h2>
+            <input
+              type="text"
+              placeholder="Nombre"
+              value={editingProduct.nombre}
+              onChange={(e) => setEditingProduct({ ...editingProduct, nombre: e.target.value })}
+              style={inputStyle}
+            />
+            <input
+              type="text"
+              placeholder="Descripción"
+              value={editingProduct.descripcion}
+              onChange={(e) => setEditingProduct({ ...editingProduct, descripcion: e.target.value })}
+              style={inputStyle}
+            />
+            <input
+              type="number"
+              placeholder="Precio"
+              value={editingProduct.precio}
+              onChange={(e) => setEditingProduct({ ...editingProduct, precio: e.target.value })}
+              style={inputStyle}
+            />
+            <input
+              type="number"
+              placeholder="Stock"
+              value={editingProduct.existencia}
+              onChange={(e) => setEditingProduct({ ...editingProduct, existencia: e.target.value })}
+              style={inputStyle}
+            />
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1em' }}>
+              <button
+                onClick={() => updateProduct(editingProduct.id)}
+                style={buttonStyle('#27ae60')}
+              >
+                Actualizar
+              </button>
+              <button
+                onClick={() => setEditingProduct(null)}
+                style={buttonStyle('#e74c3c')}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
