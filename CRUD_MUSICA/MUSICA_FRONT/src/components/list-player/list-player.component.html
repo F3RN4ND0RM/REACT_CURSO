@@ -1,0 +1,11 @@
+<div class="w-100 p-1 m-0 h-100 d-flex flex-column gap-1" >
+    <div *ngFor = "let song of songs()" style="background-color: #8d99ae;" class="p-3 d-flex flex-row justify-content-between" [ngClass] ="{'playing-song' : song.id === actualSong().id}">
+        <div class="w-75 m0 p-0">
+            {{song.name}} 
+        </div>  
+        <div class="w-25 d-flex gap-2">            
+            <button class="button-option" (click)="editSong(song)">🖊️</button>
+            <button class="button-option" (click)="deleteSong(song.id)">🚮</button>
+        </div>
+    </div>  
+</div>

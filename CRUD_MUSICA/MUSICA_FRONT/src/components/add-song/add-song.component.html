@@ -1,0 +1,56 @@
+<div class="p-3 shadow" style="background-color: #edf2f4;" *ngIf = "editingSong()== null">  
+  <form (ngSubmit)="submitSong()" #songForm="ngForm" class="d-flex flex-column gap-2">
+    <div class="w-100 d-flex flex-row gap-3">
+
+        <div  class="w-100">
+          <label for="url" class="form-label">URL de la Canción</label>
+          <input type="url" class="form-control" id="url" name="url" required [(ngModel)]="url" />
+        </div>
+        <div  class="w-100">
+          <label for="name" class="form-label">Nombre de la Canción</label>
+          <input type="text" class="form-control" id="name" name="name" required [(ngModel)]="song.name" />
+        </div>
+        <div class="w-100">
+          <label for="artist" class="form-label">Artista</label>
+          <input type="text" class="form-control" id="artist" name="artist" required [(ngModel)]="song.artist" />
+        </div>
+        <div class="w-100" >
+          <label for="album" class="form-label">Álbum</label>
+          <input type="text" class="form-control" id="album" name="album" required [(ngModel)]="song.album" />
+        </div>
+    </div>
+    <button *ngIf="!loading" type="submit" class="btn w-25 align-self-end border-0 text-white" [disabled]="songForm.invalid" style="background-color: #d80032;">
+      Add Song
+    </button>
+    
+      <div  *ngIf="loading"  class="spinner-border align-self-end" role="status">
+        <span ></span>
+      </div>
+  </form>
+</div>
+
+<div class="p-3 shadow" style="background-color: #edf2f4;" *ngIf = "editingSong()!= null">  
+  <form (ngSubmit)="editSong()" #songForm="ngForm" class="d-flex flex-column gap-2">
+    <div class="w-100 d-flex flex-row gap-3">
+        <div  class="w-100">
+          <label for="name" class="form-label">Nombre de la Canción</label>
+          <input type="text" class="form-control" id="name" name="name" required [(ngModel)]="editingSong().name" />
+        </div>
+        <div class="w-100">
+          <label for="artist" class="form-label">Artista</label>
+          <input type="text" class="form-control" id="artist" name="artist" required [(ngModel)]="editingSong().artist" />
+        </div>
+        <div class="w-100" >
+          <label for="album" class="form-label">Álbum</label>
+          <input type="text" class="form-control" id="album" name="album" required [(ngModel)]="editingSong().album" />
+        </div>
+    </div>
+    <button *ngIf="!loading" type="submit" class="btn w-25 align-self-end border-0 text-white" [disabled]="songForm.invalid" style="background-color: #d80032;">
+      update Song
+    </button>
+    
+      <div  *ngIf="loading"  class="spinner-border align-self-end" role="status">
+        <span ></span>
+      </div>
+  </form>
+</div>

@@ -1,0 +1,24 @@
+<div class="w-100 h-100 d-flex flex-column position-relative justify-content-around " style="background-color: #2b2d42;" >    
+    <div  class="position-relative m-0 py-3 shadow w-100 h-100">                 
+        <audio #audio controls id="audio" style="display: none;"  (timeupdate)="loadProgressBar()">
+            <source [src]="actualSong().id | mp3" type="audio/mpeg" />
+                Your browser does not support the audio element.
+        </audio>        
+        
+        <img src="{{actualSong().id | img}}" class="playing-song ">  
+        <div class="progress-container">
+            <div #progressBar class="progress-bar"></div>
+        </div> 
+        <section class="w-100 d-flex flex-column position-absolute " style="height: 10%; bottom: 5%;">
+            <div class="w-100 d-flex flex-row justify-content-center p-0 gap-1" style="height: 90%; ">
+                <button class="button-player"  (click)="prev()">&#9204;</button>
+                <button class="button-player"   (click)="playPause()">{{ playing ? '❚❚' : '▶' }}</button> 
+                <button class="button-player"  (click)="next()" >&#9205;</button>
+            </div>            
+        </section>          
+ 
+    </div>
+
+
+
+</div>

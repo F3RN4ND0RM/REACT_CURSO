@@ -3,12 +3,14 @@ import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import db from '../db/db.js'
 import songsRoute from "../routes/songs.routes.js"
+import imagesRoute from "../routes/images.routes.js"
 class Server{
 
     app ;
     port ; 
     apiPaths = {
-        songs : '/songs'
+        songs : '/songs',
+        images : '/img',
     }
 
     constructor(){
@@ -47,6 +49,7 @@ class Server{
     routes(){            
         //defining routes    
         this.app.use(this.apiPaths.songs, songsRoute)
+        this.app.use(this.apiPaths.images, imagesRoute)
     }
 
 

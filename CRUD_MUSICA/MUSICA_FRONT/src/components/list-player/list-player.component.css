@@ -1,0 +1,15 @@
+:host {
+  display: block;
+  font-family: Arial, Helvetica, sans-serif;  
+}
+
+:host .playing-song{  
+  background-color: #edf2f4 !important;
+}
+
+:host .button-option{  
+  background: white;  
+  border-radius: 10%;
+  font-size: 1.2em;
+  border: none;
+}
